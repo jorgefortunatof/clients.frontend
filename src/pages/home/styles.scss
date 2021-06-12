@@ -41,10 +41,22 @@
 	}
 
 	main {
+		max-height: 90vh;
+
 		margin-top: 1rem;
 		padding: 1rem;
 		border-radius: 0.2rem;
 		background-color: var(--white);
+		overflow-y: hidden;
+
+		h2 {
+			padding-bottom: 1rem;
+		}
+
+		.ClientsListContainer {
+			max-height: 50vh;
+			overflow-y: auto;
+		}
 
 		.noClientsYet {
 			padding: 2rem 0;
