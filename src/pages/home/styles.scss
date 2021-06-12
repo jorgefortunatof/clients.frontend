@@ -1,0 +1,54 @@
+.homeContainer {
+	margin: 1.5rem 0;
+
+	header {
+		padding: 1rem;
+		border-radius: 0.2rem;
+		background-color: var(--white);
+
+		h2 {
+			margin-bottom: 1rem;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+
+			input,
+			button {
+				padding: 0.5rem;
+				margin-bottom: 0.8rem;
+				border-radius: 0.2rem;
+				border: none;
+
+				font-size: 0.9rem;
+			}
+
+			button {
+				font-size: 1rem;
+
+				background-color: var(--secondary);
+				border: none;
+
+				color: var(--white);
+
+				&:hover {
+					cursor: pointer;
+					filter: brightness(0.9);
+				}
+			}
+		}
+	}
+
+	main {
+		margin-top: 1rem;
+		padding: 1rem;
+		border-radius: 0.2rem;
+		background-color: var(--white);
+
+		.noClientsYet {
+			padding: 2rem 0;
+			text-align: center;
+		}
+	}
+}
