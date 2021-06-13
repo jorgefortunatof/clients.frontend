@@ -24,6 +24,11 @@ span {
 	color: var(--black);
 }
 
+button:hover {
+	cursor: pointer;
+	filter: brightness(0.9);
+}
+
 ul {
 	list-style: none;
 }

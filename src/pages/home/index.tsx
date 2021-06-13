@@ -15,7 +15,7 @@ type PhoneType = {
 };
 
 type ClientType = {
-	id?: number;
+	id: number;
 	name: string;
 	email: string;
 	cpf: string;
@@ -24,30 +24,13 @@ type ClientType = {
 };
 
 const Home: React.FC = () => {
+	const [id, setId] = useState(0);
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [cpf, setCpf] = useState("");
 
+	const [clientToEdit, setClientToEdit] = useState({} as ClientType);
 	const [clients, setClients] = useState<ClientType[]>([]);
-
-	const toggleSave = useCallback(
-		async (event: any) => {
-			event.preventDefault();
-
-			if (!email.trim() || !name.trim() || !cpf.trim()) {
-				return alert("Preencha todos os dados");
-			}
-
-			const { data }: { data: ClientType } = await Api.post("/client", {
-				name,
-				email,
-				cpf,
-			});
-
-			setClients([...clients, data]);
-		},
-		[name, email, cpf, clients]
-	);
 
 	const getClients = useCallback(async () => {
 		const { data }: { data: ClientType[] } = await Api.get("client");
@@ -59,14 +42,71 @@ const Home: React.FC = () => {
 		}
 	}, [setClients]);
 
+	const toggleSaveClient = useCallback(
+		async (event: any) => {
+			event.preventDefault();
+
+			if (!email.trim() || !name.trim() || !cpf.trim()) {
+				return alert("Preencha todos os campos!");
+			}
+
+			if (id) {
+				await Api.put(`/client/${id}`, {
+					name,
+					email,
+					cpf,
+				});
+			} else {
+				await Api.post("/client", {
+					name,
+					email,
+					cpf,
+				});
+			}
+			getClients();
+
+			setId(0);
+			setName("");
+			setEmail("");
+			setCpf("");
+		},
+		[id, name, email, cpf, getClients]
+	);
+
+	const toggleAddPhone = useCallback(
+		async (id: number, number: string, type: string, whatsapp: boolean) => {
+			await Api.post(`/client/${id}/phone`, {
+				phones: [
+					{
+						number,
+						type,
+						whatsapp,
+					},
+				],
+			});
+
+			getClients();
+		},
+		[getClients]
+	);
+
 	useEffect(() => {
 		getClients();
 	}, [getClients]);
 
+	useEffect(() => {
+		const { id, name, email, cpf } = clientToEdit;
+
+		id && setId(id);
+		setName(name);
+		setEmail(email);
+		setCpf(cpf);
+	}, [clientToEdit]);
+
 	return (
 		<div className="homeContainer">
 			<header>
-				<h2>Cadastrar cliente</h2>
+				<h2>{id ? "Editar" : "Cadastrar"} cliente</h2>
 
 				<form>
 					<input
@@ -90,7 +130,7 @@ const Home: React.FC = () => {
 						value={cpf}
 						onChange={(event) => setCpf(event.target.value)}
 					/>
-					<button type="submit" onClick={toggleSave}>
+					<button type="submit" onClick={toggleSaveClient}>
 						Salvar
 					</button>
 				</form>
@@ -101,7 +141,12 @@ const Home: React.FC = () => {
 				<div className="ClientsListContainer">
 					{clients.length ? (
 						clients.map((client) => (
-							<Client key={String(client.id)} {...client} />
+							<Client
+								key={String(client.id)}
+								data={client}
+								toggleAddPhone={toggleAddPhone}
+								toggleEdit={(client) => setClientToEdit(client)}
+							/>
 						))
 					) : (
 						<div className="noClientsYet">
