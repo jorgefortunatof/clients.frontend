@@ -36,6 +36,7 @@
 	}
 
 	main {
+		position: relative;
 		max-height: 90vh;
 
 		margin-top: 1rem;
@@ -43,6 +44,25 @@
 		border-radius: 0.2rem;
 		background-color: var(--white);
 		overflow-y: hidden;
+
+		.searchContainer {
+			position: absolute;
+			top: 1rem;
+			right: 1rem;
+
+			input,
+			button {
+				border: none;
+				padding: 0.5rem;
+				font-size: 0.9rem;
+			}
+
+			button {
+				background-color: var(--primary);
+				color: var(--white);
+				padding: 0.4rem;
+			}
+		}
 
 		h2 {
 			padding-bottom: 1rem;

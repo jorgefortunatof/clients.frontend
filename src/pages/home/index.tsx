@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { FiSearch } from "react-icons/fi";
 
 import "./styles.scss";
 
@@ -29,18 +30,26 @@ const Home: React.FC = () => {
 	const [email, setEmail] = useState("");
 	const [cpf, setCpf] = useState("");
 
+	const [search, setSearch] = useState("");
 	const [clientToEdit, setClientToEdit] = useState({} as ClientType);
 	const [clients, setClients] = useState<ClientType[]>([]);
 
-	const getClients = useCallback(async () => {
-		const { data }: { data: ClientType[] } = await Api.get("client");
+	const getClients = useCallback(
+		async (filter?: string) => {
+			const { data }: { data: ClientType[] } = await Api.get("client", {
+				params: {
+					filter,
+				},
+			});
 
-		console.log(data);
+			console.log(data);
 
-		if (data) {
-			setClients(data);
-		}
-	}, [setClients]);
+			if (data) {
+				setClients(data);
+			}
+		},
+		[setClients]
+	);
 
 	const toggleSaveClient = useCallback(
 		async (event: any) => {
@@ -90,6 +99,17 @@ const Home: React.FC = () => {
 		[getClients]
 	);
 
+	const searchClients = useCallback(
+		async (event: any) => {
+			event.preventDefault();
+
+			getClients(search);
+
+			setSearch("");
+		},
+		[getClients, search]
+	);
+
 	useEffect(() => {
 		getClients();
 	}, [getClients]);
@@ -137,6 +157,19 @@ const Home: React.FC = () => {
 			</header>
 
 			<main>
+				<div className="searchContainer">
+					<form>
+						<input
+							type="input"
+							value={search}
+							onChange={(event) => setSearch(event.target.value)}
+						/>
+						<button type="submit" onClick={searchClients}>
+							<FiSearch />
+						</button>
+					</form>
+				</div>
+
 				<h2>Meus clientes</h2>
 				<div className="ClientsListContainer">
 					{clients.length ? (
